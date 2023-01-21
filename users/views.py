@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate
 from users.forms import SignUpForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.contrib import messages
 
 # Create your views here.
 
@@ -17,21 +17,6 @@ def dashboard(request):
 
     return render(request, 'dashboard/dashboard.html')
 
-# def signup(request):
-#     form = UserCreationForm()
-#     if request.method == 'POST':
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password1')
-#             user = authenticate(username=username, password=password)
-#             login(request, user)
-#             '''redirects user to home page after login'''
-#             return redirect('dashboard')
-#         else:
-#             form = UserCreationForm()
-#     return render(request, 'users/signup.html', {'form': form})
 
 
 def signup(request):
@@ -43,7 +28,9 @@ def signup(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
+            messages.info(f'welcome{username}')
             return redirect('dashboard')
+	
     else:
         form = SignUpForm()
     return render(request, 'users/signup.html', {'form': form})
@@ -58,11 +45,11 @@ def login_request(request):
 			user = authenticate(username=username, password=password)
 			if user is not None:
 				login(request, user)
-				print(f'welcome {username}')
+				messages.info(request,(f'welcome {username}'))
 				return redirect("dashboard")
 			else:
-				print('invalid username or password')
+				messages.warning('invalid username or password')
 		else:
-			print('invalid username or password')
+			messages.warning(request,'invalid username or password')
 	form = AuthenticationForm()
 	return render(request, 'users/login.html',{'form':form})
