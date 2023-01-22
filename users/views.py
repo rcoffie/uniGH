@@ -28,7 +28,7 @@ def signup(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.info(f'welcome{username}')
+            messages.info(request,(f'welcome {username}'))
             return redirect('dashboard')
 	
     else:
