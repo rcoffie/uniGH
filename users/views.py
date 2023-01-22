@@ -4,6 +4,7 @@ from users.forms import SignUpForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -12,7 +13,7 @@ def home(request):
 
     return render(request, 'home.html')
 
-
+@login_required(login_url='signup')
 def dashboard(request):
 
     return render(request, 'dashboard/dashboard.html')
@@ -28,7 +29,7 @@ def signup(request):
             password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.info(f'welcome{username}')
+            messages.info(request,(f'welcome {username}'))
             return redirect('dashboard')
 	
     else:
